@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/ErikDubbelboer/gspt"
 	"github.com/codegangsta/cli"
 	"gopkg.in/yaml.v2"
 )
@@ -68,6 +69,10 @@ func readConfig(c *cli.Context) {
 	}
 }
 
+func setup() {
+	gspt.SetProcTitle(config.ProgramName)
+}
+
 var (
 	config Config
 )
@@ -92,6 +97,7 @@ func main() {
 
 	app.Before = func(c *cli.Context) {
 		readConfig(c)
+		setup()
 	}
 
 	app.Commands = []cli.Command{
