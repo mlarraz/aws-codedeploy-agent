@@ -26,21 +26,21 @@ func agentStatus() string {
 }
 
 type Config struct {
-	ProgramName                 string
-	WaitBetweenSpawningChildren int
-	LogDir                      string
-	PidDir                      string
-	SharedDir                   string
-	User                        string
-	Children                    int
-	HTTPReadTimeout             int
-	InstanceServiceRegion       string
-	InstanceServiceEndpoint     string
-	InstanceServicePort         string
-	WaitBetweenRuns             int
-	WaitAfterError              int
-	CodedeployTestProfile       string
-	OnPremisesConfigFile        string
+	ProgramName                 string `yaml:":program_name"`
+	WaitBetweenSpawningChildren int    `yaml:":wait_between_spawning_children"`
+	LogDir                      string `yaml:":log_dir"`
+	PidDir                      string `yaml:":pid_dir"`
+	SharedDir                   string `yaml:":shared_dir"`
+	User                        string `yaml:":user"`
+	Children                    int    `yaml:":children"`
+	HTTPReadTimeout             int    `yaml:":http_read_timeout"`
+	InstanceServiceRegion       string `yaml:":instance_service_region"`
+	InstanceServiceEndpoint     string `yaml:":instance_service_endpoint"`
+	InstanceServicePort         string `yaml:":instance_service_port"`
+	WaitBetweenRuns             int    `yaml:":wait_between_runs"`
+	WaitAfterError              int    `yaml:":wait_after_error"`
+	CodedeployTestProfile       string `yaml:":codedeploy_test_profile"`
+	OnPremisesConfigFile        string `yaml:":on_premises_config_file"`
 }
 
 func defaultConfig() Config {
