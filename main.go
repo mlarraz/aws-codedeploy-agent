@@ -1,10 +1,12 @@
 package main
 
 import (
+	"io/ioutil"
 	"log"
 	"os"
 
 	"github.com/codegangsta/cli"
+	"gopkg.in/yaml.v2"
 )
 
 func startAgent() {
@@ -41,6 +43,39 @@ type Config struct {
 	OnPremisesConfigFile        string
 }
 
+func defaultConfig() Config {
+	return Config{
+		ProgramName:                 "codedeploy-agent",
+		WaitBetweenSpawningChildren: 1,
+		Children:                    1,
+		HTTPReadTimeout:             80,
+		WaitBetweenRuns:             30,
+		WaitAfterError:              30,
+		CodedeployTestProfile:       "prod",
+		OnPremisesConfigFile:        "/etc/codedeploy-agent/conf/codedeploy.onpremises.yml",
+	}
+}
+
+func readConfig(c *cli.Context) {
+	data, err := ioutil.ReadFile(c.GlobalString("config_file"))
+	if err != nil {
+		log.Fatal("Could not read config file")
+	}
+
+	err = yaml.Unmarshal(data, &config)
+	if err != nil {
+		log.Fatal("Error unmarshaling config file")
+	}
+}
+
+var (
+	config Config
+)
+
+func init() {
+	config = defaultConfig()
+}
+
 func main() {
 	app := cli.NewApp()
 
@@ -53,6 +88,10 @@ func main() {
 			Value: "/etc/codedeploy-agent/conf/codedeployagent.yml",
 			Usage: "Path to agent config file",
 		},
+	}
+
+	app.Before = func(c *cli.Context) {
+		readConfig(c)
 	}
 
 	app.Commands = []cli.Command{
@@ -72,6 +111,7 @@ func main() {
 				pid := agentStatus()
 
 				if len(pid) == 0 {
+					log.Fatal("AWS CodeDeploy agent is still running")
 				}
 			},
 		},
